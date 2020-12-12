@@ -115,28 +115,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Flower, function (sprite, otherS
 })
 scene.onOverlapTile(SpriteKind.Player, myTiles.tile5, function (sprite, location) {
     current_level += 1
+    if (info.score() > 7) {
+        info.changeLifeBy(1)
+    }
     startLevel()
 })
 function startLevel () {
-    tom_kom = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . 4 . . . 
-        . . . . . . . . . . . . 4 4 4 . 
-        4 . . . . . . . . . . . 4 4 5 . 
-        4 4 4 4 4 4 b 4 4 b 4 4 b 4 4 4 
-        . . . 4 4 b 4 4 b 4 4 b 4 4 . . 
-        . . . 4 b 4 4 b 4 4 b 4 . . . . 
-        . . . 4 . 4 . . . 4 . 4 . . . . 
-        . . . 4 . 4 . . . 4 . 4 . . . . 
-        . . . 1 . 1 . . . 1 . 1 . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Player)
-    controller.moveSprite(tom_kom, 100, 0)
     if (current_level == 0) {
         tiles.setTilemap(tilemap`level_0`)
     } else {
@@ -148,7 +132,6 @@ function startLevel () {
     }
     tom_kom.ay = 340
     scene.cameraFollowSprite(tom_kom)
-    info.setLife(3)
     for (let value of tiles.getTilesByType(myTiles.tile2)) {
         coin = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -473,7 +456,27 @@ scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     `)
-current_level = 1
+current_level = 0
+tom_kom = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . 4 . . . 
+    . . . . . . . . . . . . 4 4 4 . 
+    4 . . . . . . . . . . . 4 4 5 . 
+    4 4 4 4 4 4 b 4 4 b 4 4 b 4 4 4 
+    . . . 4 4 b 4 4 b 4 4 b 4 4 . . 
+    . . . 4 b 4 4 b 4 4 b 4 . . . . 
+    . . . 4 . 4 . . . 4 . 4 . . . . 
+    . . . 4 . 4 . . . 4 . 4 . . . . 
+    . . . 1 . 1 . . . 1 . 1 . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Player)
+controller.moveSprite(tom_kom, 89, 0)
+info.setLife(3)
 startLevel()
 game.onUpdate(function () {
     tom_kom.setImage(img`
