@@ -5,10 +5,18 @@ namespace SpriteKind {
 scene.onOverlapTile(SpriteKind.Player, myTiles.tile3, function (sprite, location) {
     game.over(false, effects.melt)
 })
+function showRandomSlogan () {
+    slogans = ["Tom Kom! Forever!", "I'm Tom Kom!", "I came to kick your ass!", "Yeah! Let's do it!", "Yes, Master!"]
+    music.pewPew.play()
+    tom_kom.say(slogans[randint(0, slogans.length)], 2000)
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
     info.changeScoreBy(1)
     music.magicWand.play()
     otherSprite.destroy()
+})
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    showRandomSlogan()
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (tom_kom.vy == 0) {
@@ -123,33 +131,28 @@ scene.onOverlapTile(SpriteKind.Player, myTiles.tile5, function (sprite, location
 function startLevel () {
     if (current_level == 0) {
         tiles.setTilemap(tilemap`level_0`)
+    } else if (current_level == 1) {
+        tiles.setTilemap(tilemap`level_3`)
+    } else if (current_level == 2) {
+        tiles.setTilemap(tilemap`level_4`)
     } else {
-        tiles.setTilemap(tiles.createTilemap(hex`320010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000050000000000000000050000000000000000000000010100000000000101000000000001010000010100000000000004000001000000000000000101010000000004000000010000000000010100000000000000000000000000000000000000000101000000000000000100000000000001000101000000000000000000000000000000000001000000000000000000000500000000000003000100000000000000000000000000010000000400010000000000010100000001000000000000000001010100000000010100000100000000000000000000000000000100010000000000000000000000000000010000000000000000000000040000000000000100040000010000000000000006000000000000000400000000010000000000000100000000000000000101000000000000000001010000000100000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000000000000001010005000000000000000000000004000000010000000100000000000000000000000000000000000000000000000000000000000101010000000000000000000101000100000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202`, img`
-            ..................................................
-            ..................................................
-            ..................................................
-            .......................................2..........
-            ..................22.....22.....22..22.........2..
-            .....222........2.....22....................22....
-            ...2......2.22.................2..................
-            .2.............2.....2.....22...2........222....22
-            ..2..............2.2..............2...............
-            ...2....2....................2......2........22...
-            .....22...2.............22........................
-            ............22.................2...2..............
-            ...............222.........22.2..2................
-            ..................................................
-            ..................................................
-            ..................................................
-            `, [myTiles.transparency16,myTiles.tile1,myTiles.tile3,myTiles.tile5,myTiles.tile2,myTiles.tile4,myTiles.tile6], TileScale.Sixteen))
+        game.over(true)
     }
     tiles.placeOnRandomTile(tom_kom, myTiles.tile6)
     for (let value of tiles.getTilesByType(myTiles.tile6)) {
         tiles.setTileAt(value, myTiles.transparency16)
     }
-    tom_kom.ay = 340
     scene.cameraFollowSprite(tom_kom)
-    for (let value2 of tiles.getTilesByType(myTiles.tile2)) {
+    for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
+        value2.destroy()
+    }
+    for (let value3 of sprites.allOfKind(SpriteKind.Coin)) {
+        value3.destroy()
+    }
+    for (let value4 of sprites.allOfKind(SpriteKind.Flower)) {
+        value4.destroy()
+    }
+    for (let value22 of tiles.getTilesByType(myTiles.tile2)) {
         coin = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -310,11 +313,11 @@ function startLevel () {
         100,
         true
         )
-        tiles.setTileAt(value2, myTiles.transparency16)
-        tiles.placeOnTile(coin, value2)
-        tiles.setTileAt(value2, myTiles.transparency16)
+        tiles.setTileAt(value22, myTiles.transparency16)
+        tiles.placeOnTile(coin, value22)
+        tiles.setTileAt(value22, myTiles.transparency16)
     }
-    for (let value3 of tiles.getTilesByType(myTiles.tile4)) {
+    for (let value32 of tiles.getTilesByType(myTiles.tile4)) {
         bee = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -333,8 +336,8 @@ function startLevel () {
             . . . . 8 7 7 7 7 7 8 . . . . . 
             . . . . . 8 7 7 8 . . . . . . . 
             `, SpriteKind.Flower)
-        tiles.placeOnTile(bee, value3)
-        tiles.setTileAt(value3, myTiles.transparency16)
+        tiles.placeOnTile(bee, value32)
+        tiles.setTileAt(value32, myTiles.transparency16)
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -348,6 +351,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 })
 let coin: Sprite = null
 let bee: Sprite = null
+let slogans: string[] = []
 let tom_kom: Sprite = null
 let current_level = 0
 scene.setBackgroundColor(9)
@@ -473,7 +477,7 @@ scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     `)
-current_level = 0
+current_level = 2
 tom_kom = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -494,6 +498,7 @@ tom_kom = sprites.create(img`
     `, SpriteKind.Player)
 controller.moveSprite(tom_kom, 89, 0)
 info.setLife(3)
+tom_kom.setFlag(SpriteFlag.BounceOnWall, false)
 startLevel()
 game.onUpdate(function () {
     tom_kom.setImage(img`
@@ -574,7 +579,32 @@ game.onUpdate(function () {
     } else {
     	
     }
-    if (tom_kom.vx < 0) {
+    if ((tom_kom.isHittingTile(CollisionDirection.Left) || tom_kom.isHittingTile(CollisionDirection.Right)) && tom_kom.vy >= 0) {
+        tom_kom.vy = 0
+        tom_kom.ay = 0
+        tom_kom.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . 4 4 . . . . . 
+            . . . . . . . . 5 4 4 . . . . . 
+            . . . . . . . . 4 4 4 4 . . . . 
+            . . . . . . . 4 4 4 4 4 4 . . . 
+            . . . . . . . . . . 4 4 4 4 4 1 
+            . . . . . . . . . . 4 4 4 4 4 1 
+            . . . . . . . . . . 4 4 4 . . . 
+            . . . . . . . . . . 4 4 4 . . . 
+            . . . . . . . . . . 4 4 4 . . . 
+            . . . . . . . . . . 4 4 4 . . . 
+            . . . . . . . . . . 4 4 4 4 4 1 
+            . . . . . . . . . . 4 4 4 4 4 1 
+            . . . . . . . 4 . . 4 4 4 . . . 
+            . . . . . . . . 4 4 4 . . . . . 
+            `)
+    } else {
+        tom_kom.ay = 340
+    }
+    if (tom_kom.vx < 0 || tom_kom.isHittingTile(CollisionDirection.Left)) {
         tom_kom.image.flipX()
+        tom_kom.setImage(tom_kom.image)
     }
 })
