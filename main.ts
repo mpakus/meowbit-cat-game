@@ -1,9 +1,11 @@
 namespace SpriteKind {
     export const Coin = SpriteKind.create()
     export const Flower = SpriteKind.create()
+    export const Fireball = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, myTiles.tile3, function (sprite, location) {
-    game.over(false, effects.melt)
+    info.changeLifeBy(-1)
+    startLevel()
 })
 function showRandomSlogan () {
     slogans = ["Tom Kom! Forever!", "I'm Tom Kom!", "I came to kick your ass!", "Yeah! Let's do it!", "Yes, Master!"]
@@ -121,6 +123,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Flower, function (sprite, otherS
     bee.setPosition(tom_kom.x + 80, tom_kom.y - 80)
     bee.follow(tom_kom)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Fireball, function (sprite, otherSprite) {
+    otherSprite.startEffect(effects.clouds, 5000)
+    music.powerDown.play()
+    info.changeLifeBy(-1)
+    otherSprite.destroy()
+})
 scene.onOverlapTile(SpriteKind.Player, myTiles.tile5, function (sprite, location) {
     current_level += 1
     if (info.score() > 7) {
@@ -150,6 +158,9 @@ function startLevel () {
         value3.destroy()
     }
     for (let value4 of sprites.allOfKind(SpriteKind.Flower)) {
+        value4.destroy()
+    }
+    for (let value4 of sprites.allOfKind(SpriteKind.Fireball)) {
         value4.destroy()
     }
     for (let value22 of tiles.getTilesByType(myTiles.tile2)) {
@@ -339,6 +350,35 @@ function startLevel () {
         tiles.placeOnTile(bee, value32)
         tiles.setTileAt(value32, myTiles.transparency16)
     }
+    for (let value32 of tiles.getTilesByType(myTiles.tile11)) {
+        fireball = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . 2 5 5 2 2 5 . . . . . . . . . 
+            . 2 5 5 5 . 5 5 2 2 . . . . . . 
+            . . 5 2 5 5 5 4 5 4 2 5 . . . . 
+            . . 5 5 4 4 4 4 4 5 5 5 5 2 . . 
+            . 5 5 5 4 4 . 4 4 . 4 5 . 2 . . 
+            . 5 2 4 4 . . 4 4 4 4 5 . . 5 . 
+            . 5 2 4 4 2 4 4 8 . 4 5 5 . 5 . 
+            5 5 5 5 5 5 5 4 . 4 5 5 5 4 5 . 
+            5 . 5 4 5 5 5 5 5 5 . 5 5 5 5 . 
+            5 5 5 2 2 5 4 5 5 5 5 5 4 5 5 . 
+            . 5 5 5 5 4 4 4 5 5 5 5 5 5 5 . 
+            . . 5 5 2 2 4 4 5 5 5 5 5 5 5 . 
+            . . . . . 2 2 2 2 4 4 5 . 5 . . 
+            . . . . . . . . . . . 5 . 5 . . 
+            . . . . . . . . . . . 5 5 . . . 
+            `, SpriteKind.Fireball)
+        tiles.placeOnTile(fireball, value32)
+        tiles.setTileAt(value32, myTiles.transparency16)
+        animation.runMovementAnimation(
+        fireball,
+        "c 0 -100 0 100 0 0",
+        5000,
+        true
+        )
+        fireball.startEffect(effects.fire)
+    }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
@@ -349,6 +389,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         music.powerDown.play()
     }
 })
+let fireball: Sprite = null
 let coin: Sprite = null
 let bee: Sprite = null
 let slogans: string[] = []
@@ -477,7 +518,7 @@ scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     `)
-current_level = 2
+current_level = 0
 tom_kom = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -497,7 +538,7 @@ tom_kom = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
 controller.moveSprite(tom_kom, 89, 0)
-info.setLife(3)
+info.setLife(4)
 tom_kom.setFlag(SpriteFlag.BounceOnWall, false)
 startLevel()
 game.onUpdate(function () {
