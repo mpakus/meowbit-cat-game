@@ -3,12 +3,14 @@ namespace SpriteKind {
     export const Flower = SpriteKind.create()
     export const Fireball = SpriteKind.create()
 }
-scene.onOverlapTile(SpriteKind.Player, myTiles.tile3, function (sprite, location) {
-    info.changeLifeBy(-1)
-    startLevel()
-})
 function showRandomSlogan () {
-    slogans = ["Tom Kom! Forever!", "I'm Tom Kom!", "I came to kick your ass!", "Yeah! Let's do it!", "Yes, Master!"]
+    slogans = [
+    "Tom Kom! Forever!",
+    "I'm Tom Kom!",
+    "I came to kick your ass!",
+    "Yeah! Let's do it!",
+    "Yes, Master!"
+    ]
     music.pewPew.play()
     tom_kom.say(slogans[randint(0, slogans.length)], 2000)
 }
@@ -20,10 +22,21 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSpr
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     showRandomSlogan()
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
+    current_level += 1
+    if (info.score() > 7) {
+        info.changeLifeBy(1)
+    }
+    startLevel()
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (tom_kom.vy == 0) {
         tom_kom.vy = -150
     }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`tile3`, function (sprite, location) {
+    info.changeLifeBy(-1)
+    startLevel()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Flower, function (sprite, otherSprite) {
     music.pewPew.play()
@@ -129,13 +142,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Fireball, function (sprite, othe
     info.changeLifeBy(-1)
     otherSprite.destroy()
 })
-scene.onOverlapTile(SpriteKind.Player, myTiles.tile5, function (sprite, location) {
-    current_level += 1
-    if (info.score() > 7) {
-        info.changeLifeBy(1)
-    }
-    startLevel()
-})
 function startLevel () {
     if (current_level == 0) {
         tiles.setTilemap(tilemap`level_0`)
@@ -143,12 +149,16 @@ function startLevel () {
         tiles.setTilemap(tilemap`level_3`)
     } else if (current_level == 2) {
         tiles.setTilemap(tilemap`level_4`)
+    } else if (current_level == 3) {
+        tiles.setCurrentTilemap(tilemap`level1`)
+    } else if (current_level == 4) {
+        tiles.setCurrentTilemap(tilemap`level0`)
     } else {
         game.over(true)
     }
-    tiles.placeOnRandomTile(tom_kom, myTiles.tile6)
-    for (let value of tiles.getTilesByType(myTiles.tile6)) {
-        tiles.setTileAt(value, myTiles.transparency16)
+    tiles.placeOnRandomTile(tom_kom, assets.tile`tile6`)
+    for (let value of tiles.getTilesByType(assets.tile`tile6`)) {
+        tiles.setTileAt(value, assets.tile`transparency16`)
     }
     scene.cameraFollowSprite(tom_kom)
     for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
@@ -163,7 +173,7 @@ function startLevel () {
     for (let value4 of sprites.allOfKind(SpriteKind.Fireball)) {
         value4.destroy()
     }
-    for (let value22 of tiles.getTilesByType(myTiles.tile2)) {
+    for (let value22 of tiles.getTilesByType(assets.tile`tile2`)) {
         coin = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -324,11 +334,11 @@ function startLevel () {
         100,
         true
         )
-        tiles.setTileAt(value22, myTiles.transparency16)
+        tiles.setTileAt(value22, assets.tile`transparency16`)
         tiles.placeOnTile(coin, value22)
-        tiles.setTileAt(value22, myTiles.transparency16)
+        tiles.setTileAt(value22, assets.tile`transparency16`)
     }
-    for (let value32 of tiles.getTilesByType(myTiles.tile4)) {
+    for (let value32 of tiles.getTilesByType(assets.tile`tile4`)) {
         bee = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -348,9 +358,9 @@ function startLevel () {
             . . . . . 8 7 7 8 . . . . . . . 
             `, SpriteKind.Flower)
         tiles.placeOnTile(bee, value32)
-        tiles.setTileAt(value32, myTiles.transparency16)
+        tiles.setTileAt(value32, assets.tile`transparency16`)
     }
-    for (let value32 of tiles.getTilesByType(myTiles.tile11)) {
+    for (let value32 of tiles.getTilesByType(assets.tile`tile11`)) {
         fireball = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . 2 5 5 2 2 5 . . . . . . . . . 
@@ -370,7 +380,7 @@ function startLevel () {
             . . . . . . . . . . . 5 5 . . . 
             `, SpriteKind.Fireball)
         tiles.placeOnTile(fireball, value32)
-        tiles.setTileAt(value32, myTiles.transparency16)
+        tiles.setTileAt(value32, assets.tile`transparency16`)
         animation.runMovementAnimation(
         fireball,
         "c 0 -100 0 100 0 0",
