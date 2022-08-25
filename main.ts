@@ -130,7 +130,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Flower, function (sprite, otherS
         . . . . . . . f f e e e . . . . 
         . . . . . . f f e e e e . . . . 
         `],
-    100,
+    500,
     true
     )
     bee.setPosition(tom_kom.x + 80, tom_kom.y - 80)
