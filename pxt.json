@@ -1,5 +1,6 @@
 {
     "name": "tom kom and the evil parot",
+    "version": "0.0.1",
     "description": "",
     "dependencies": {
         "device": "*",
